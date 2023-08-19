@@ -1,0 +1,200 @@
+import java.util.*;
+
+// LLD of Dream 11
+public class Main {
+
+    public class Address {
+        private String AddressLine1;
+        private String AddressLine2;
+        private String AddressLine3;
+        private String city;
+        private String state;
+        private String country;
+    }
+
+    public class Phone {
+        private String phoneNumber;
+        private CountryCode countryCode;
+    }
+
+    public class Person {
+        private String name;
+        private String emailId;
+        private String phoneNumber;
+        private Address address;
+    }
+
+    public class Admin extends Person {
+        
+        public void addTournament(){}
+        public void addMatch(){}
+        public void addTeam(){}
+    }
+
+    public class UserProfile {
+         private List<Tournament> tournamentList;
+
+    }
+
+    public class User extends Person {
+        private UserProfile profile;
+
+        public void login() {}
+        public void signup() {}
+    }
+
+
+    public class Stat {
+        private Integer run;
+        private Integer four;
+        private Integer six;
+        private Integer wicket;
+        private Integer catchTaken;
+        private Integer runOut;
+    }
+
+    public class Player {
+        private String name;
+        private Stat stat;
+        private int credit;
+        private int pointScored;
+
+        public void Player(final String name, int credit) {
+            this.name = name;
+            this.pointScored = 0;
+            this.credit = credit;
+            this.stat = new Stat();
+        }
+
+        public int getPlayerPointScored() {
+            return this.pointScored;
+        }
+
+        public void updateScoreBy(int score) {
+            this.pointScored += score;
+        }
+    }
+    
+    public class Wicket {
+        private Player bowler;
+        private Player batsMan;
+        private WicketType wicketStatus;
+    }
+
+    public class Ball {
+        private int ballNumber;
+        private Player batsMan;
+        private Player bowler;
+        private Integer run;
+        private Wicket wicket;
+        private BallEvent ballEvent;
+
+        public void updateScore() {
+            batsMan.updateScoreBy(1); // setting to dummy value
+            bowler.updateScoreBy(2); // setting to dummy value
+        }
+    }
+
+    public class Over {
+        private int overNumber;
+        private Player overBy;
+        private List<Ball> ball;
+
+        public void addOver(){}
+    }
+
+    public class Inning {
+        private String inningId;
+        private List<Over> overList;
+        private Team team;
+
+        public void addOver(){}
+    }
+
+    public class Team {
+        private String name;
+        private List<Player> players;
+
+        public void addPlayer(){}
+    }
+
+    public class Match {
+        private String name;
+        private Team team1;
+        private Team team2;
+        private Date startTime;
+        private MatchFormate matchFormate;
+        private MatchStatus matchStatus;
+        private List<Inning> inningList;
+        private Team Winner;
+        private List<Tournament> tournamentList;
+    }
+    
+    public class Tournament {
+        private String tournamentName;
+        private Match match;
+        private int entryFee;
+        private int totalSeat;
+        private TournamentStatus status;
+        private List<ParticipantTeam> playerTeams;
+
+        public List<ParticipantTeam> getLeaderBoard() {
+            Collections.sort(playerTeams, (a, b) -> b.score-a.score);
+            return playerTeams;
+        }
+    }
+
+    public class ParticipantTeam {
+        private String name;
+        private User userDetails;
+        private Player captain;
+        private Player voieCaptain;
+        private List<Player> playing11;
+        private Integer score;
+
+        public Integer getScore() {
+            this.score = 0;
+            playing11.forEach(item -> {
+                this.score += item.getPlayerPointScored();
+            });
+            return this.score;
+        }
+        public void addPlayer() {}
+
+        public List<Player> getPlaying11() {
+            return this.playing11;
+        }
+
+    }
+
+    public enum WicketType {
+        BOLD, RUN_OUT;
+    }
+
+    public enum BallEvent {
+        NORMA, WICKET, WIDE, NO_BALL;
+    }
+
+    public enum CountryCode {
+        IN(+91), US(+1), UK(+2);
+
+        CountryCode(int i) {
+        }
+    }
+    
+    public enum TournamentStatus {
+        TO_START, ACTIVE, FINISHED, CANCELED;
+    }
+
+    public enum MatchFormate {
+        T20, ODI, TEST;
+    }
+
+    public enum MatchStatus {
+        TO_START, ACTIVE, FINISHED, CANCELED;
+    }
+
+    public static void main(String[] args) {
+
+    }
+}
