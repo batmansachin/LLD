@@ -1,0 +1,231 @@
+public class Main {
+
+// Amazon System Design
+//We will be designing a system with the following requirements:
+//Users should be able to add new products to sell.
+//Users should be able to search for products by their name or category.
+//Users can search and view all the products, but they will have to become a registered member to buy a product.
+//Users should be able to add/remove/modify product items in their shopping cart.
+//Users can check out and buy items in the shopping cart.
+//Users can rate and add a review for a product.
+//The user should be able to specify a shipping address where their order will be delivered.
+//Users can cancel an order if it has not shipped.
+//Users should get notifications whenever there is a change in the order or shipping status.
+//Users should be able to track their shipment to see the current state of their order.
+
+    public class Address {
+        String addressLine1;
+        String addressLine2;
+        String addressLine3;
+        String state;
+        String city;
+        String zipCode;
+        String landMark;
+    }
+
+    public class Account {
+        String userName;
+        String password;
+        String emailId;
+        String phoneNumber;
+        List<Address> AddressList;
+        AccountStatus accountStatus;
+        List<Order> orderList;
+        List<CartItem> cartList;
+        List<ProductReview> productReviewList;
+        List<PaymentMethod> paymentMethodList;
+
+        public void addAddress();
+    }
+
+    public abstarct class Customer {
+        public void register();
+    }
+
+    public class Admin extends Customer {
+        public void addMerchant();
+        public void blockMerchant();
+        public void removeMerchant();
+        public void blockCustomer();
+        public void removeCustomer();
+    }
+
+    public class Merchant extends Customer {
+        List<Product> productList;
+
+        public void addProduct();
+        public void removeProduct();
+    }
+
+    public class User extends Customer {
+        Account account;
+
+        public void addToCart();
+        public void removeToCart();
+        public void checkout();
+        public void addToCart();
+        public void removeToCart();
+        public void addReview();
+    }
+
+    public class unRegistrUser extends Customer {
+
+        public void addToCart();
+        public void removeToCart();
+    }
+
+    public class Order {
+        String orderId;
+        String name;
+        String description;
+        Amount amount;
+        Date date;
+        OrderStatus orderStatus;
+        ShipmentStatus status;
+        Shipment shipment;
+        Payment payment;
+    }
+
+    public class Shipment {
+        String shipmentNumber;
+        String estimatedArrival;
+        List<ShipmentLog> shipmentLogList;
+
+        public void addShipmentlog(ShipmentLog);
+    }
+
+    public class Product {
+        String productId;
+        String Description;
+        String productName;
+        ProductType productType;
+        Integer quantity;
+        Account account;
+        List<ProductReview> productReviewList;
+
+        public void updateQuantity(Integer quantity);
+        public void updateProductDetails(Product product);
+    }
+
+    public class ProductReview {
+        String review;
+        integer rating;
+        User user;
+    }
+
+    public enum ProductType {
+        ELECTRONIC, GROCERY, SPORTS, MOBILE, FASHION;
+    }
+
+    public class NotificationInfo {
+        private int notificationId;
+        private Date createdOn;
+        private String content;
+    }
+
+    public interface Notification {
+        public void sendNotification(NotificationInfo notificationInfo);
+    }
+
+    public class emailNotification implements Notification {
+        public void sendNotification(NotificationInfo notificationInfo);
+    }
+
+    public class smsNotification implements Notification {
+        public void sendNotification(NotificationInfo notificationInfo);
+    }
+
+    public class pushNotification implements Notification {
+        public void sendNotification(NotificationInfo notificationInfo);
+    }
+
+    public class Payment {
+        String paymentId;
+        String orderId;
+        PaymentMethod paymentMethod;
+        Amount amount;
+        Date date;
+        PaymentStatus paymentStatus;
+    }
+
+    public class ShipmentLog {
+        Date date;
+        String description;
+        ShipmentStatus status;
+    }
+
+    public class Tax {
+        double sgst;
+        double cgst;
+    }
+
+    public class Amount {
+        double price;
+        Tax tax;
+    }
+
+    public class Cart {
+        List<CartItem> cartItemList;
+
+        public void checkout();
+        public void updateCart(cartItemList);
+        public void addCart(CartItem);
+        public List<CartItem> getCartItemList();
+        public boolean checkout();
+
+    }
+
+    class class CartItem {
+        String cartId;
+        String productId;
+        Integer quantity;
+        Amount amount;
+    }
+
+    public class PaymentMethod {
+        PaymentMethodType paymentMethodType;
+        String PaymentMethodId;
+    }
+
+    public interface search {
+        public List<Product> searchProductsByName(String name);
+        public List<Product> searchProductsByCategory(String category);
+    }
+
+    public class SearchCatalog implements Search {
+        HashMap<String, List<Product>> productNames;
+        HashMap<String, List<Product>> productCategories;
+
+        public List<Product> searchProductsByName(String name) {
+            return productNames.get(name)
+        }
+
+        public  List<Product> searchProductsByCategory(String category) {
+            return productCategories.get(category);
+        }
+    }
+
+    public enum PaymentMethodType {
+        UPI, NET_BANKING, CREDIT_CARD, PAYPAL;
+    }
+
+    public enum AccountStatus {
+        ACTIVE, INACTIVE, SUSPENDED;
+    }
+
+    public enum OrderStatus {
+        NEW, COMPLETED, INPROCESS, PICKED_UP, DELIVERED, CANCELED, SIDELINE;
+    }
+
+    public enum ShipmentStatus {
+        NEW, INPROCESS, SHIPED;
+    }
+
+    public enum PaymentStatus {
+        NEW, COMPLETED, SETTLING, SETTLED, REJECTED, CANCELED, DECLINED, SIDELINED, REFUNDED, DECLINED;
+    }
+
+    public static void main(String[] args) {
+
+    }
+}
