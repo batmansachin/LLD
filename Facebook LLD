@@ -1,0 +1,284 @@
+public class Main {
+
+//    Each member should be able to add information about their basic profile, work experience, education, etc.
+//    Any user of our system should be able to search other members, groups or pages by their name.
+//    Members should be able to send and accept/reject friend requests from other members.
+//    Members should be able to follow other members without becoming their friend.
+//    Members should be able to create groups and pages, as well as join already created groups, and follow pages.
+//    Members should be able to create new posts to share with their friends.
+//    Members should be able to add comments to posts, as well as like or share a post or comment.
+//    Members should be able to create privacy lists containing their friends. Members can link any post with a privacy list to make the post visible only to the members of that list.
+//    Any member should be able to send messages to other members.
+//    Any member should be able to add a recommendation for any page.
+//    The system should send a notification to a member whenever there is a new message or friend request or comment on their post.
+//    Members should be able to search through posts for a word.
+
+
+    public abstract class Person {
+        private String name;
+        private String email;
+        private String phone;
+        private Address address;
+
+        private Account account;
+
+        public void updateAddress(Address address);
+
+    }
+
+    public class Member extends Person {
+
+        private String accountId;
+        private Profile profile;
+        private List<ConnectionRequest> sentConnectionRequest;
+        private List<ConnectionRequest> recivedConnectionRequest;
+        private List<Member> followsList;
+        private List<Group> groupList;
+        private List<Post> createdPostList;
+        private List<Memeber> blockedMemeberList;
+
+
+        public void sentConnectionRequest(Member member);
+        public void acceptConnectionRequest(Member member);
+        public void followMember(Member member);
+        public void followPage(Member member);
+        public void blockMember(Member member);
+        public void createGroup(Group group);
+        public void joinGroup(Group group);
+        public void createPost(Post post);
+        public void sendMessage(Message message);
+
+    }
+
+    public class Page {
+        String pageId;
+        Date createdDate;
+        List<Member> followers;
+        Member owner;
+    }
+
+    public class Page {
+        private Integer pageId;
+        private String name;
+        private String description;
+        private String type;
+        private int totalMembers;
+        private List<Recommendation> recommendation;
+
+        private List<Recommendation> getRecommendation();
+    }
+
+    public class Recommendation {
+        private Integer recommendationId;
+        private int rating;
+        private String description;
+        private Date createdAt;
+    }
+
+
+    public class Admin extends Person {
+        public void blockeUser(Member member);
+        public void unblockUser(Member member);
+
+        public void blockGroup(Group group);
+        public void deletePost(Post post);
+    }
+
+    public class Profile {
+        private byte[] profilePic;
+        private byte[] coverPic;
+        private String gender;
+        private List<WorkExperience> workExperienceList;
+        private List<Education> educationList;
+
+        public void addWorkExperience(WorkExperience workExperience);
+        public void addEducation(Education education);
+        public void updateProfilePic(byte[] pic);
+        public void updateCoverPic(byte[] pic);
+    }
+
+    public class Account {
+        String accountId;
+        String password;
+        AccountStatus accountStatus;
+
+        public void resetPassword();
+    }
+
+    public enum AccountStatus {
+        ACTIVE, IN_ACTIVE, SUSPENDED, SUSPICOUS, DELETED;
+    }
+
+    public class Group {
+        String groupId;
+        String groupName;
+        Member groupOwner;
+        List<Post> postList;
+        List<Member> followers;
+        GroupyType gropyType;
+
+        public void createPost();
+    }
+
+    public class Post {
+        String id;
+        String memberId;
+        String description;
+        byte[] media;
+        List<Comment> commentList;
+        Map<Reaction, List<Member>> publicReaction; // it contains counts against reaction.
+    }
+
+    public enum Reaction {
+        LIKE, DISLIKE;
+    }
+
+    public class Comment {
+        String commentId;
+        String commentMsg;
+    }
+
+    public class ConnectionRequest {
+        String senderUserId;
+        String receiverUserId;
+        Date date;
+        ConnectionRequestStatus connectionRequestStatus;
+        ConnectionRequestType requestType;
+    }
+
+    public enum ConnectionRequestType {
+        REQUESTED, RECIVED;
+    }
+    public enum ConnectionRequestStatus {
+        PENDING, ACCEPTED, REJECTED;
+    }
+
+    public class Experience {
+        String startDate;
+        String endDate;
+        Instiution instiution;
+    }
+
+    public class WorkExperience extends Experience {
+        String designation
+    }
+
+    public class Education extends Experience {
+        String degree;
+    }
+
+    public class Instiution {
+        String id;
+        String name;
+        Address address;
+    }
+
+    public class Address {
+        String addLine1;
+        String addLine2;
+        String state;
+        String country;
+    }
+
+    public enum GroupyType {
+        PUBLIC, PRIVATE;
+    }
+
+    /*
+    Message
+     */
+    public class Message {
+        String messageId;
+        String SenderUserId;
+        String receiverUserId;
+        Date timeStamp;
+    }
+
+    public class ImageMessage extends Message {
+        byte[] image;
+    }
+
+    public class TextMessage extends Message {
+        String message;
+    }
+
+    public class VideoMessage extends Message {
+        byte[] video;
+    }
+
+    /*
+    Notification
+     */
+    public class Notification {
+        private String notificationId;
+        private String content;
+        private Member sender;
+        private Member receiver;
+    }
+
+    public interface NotificationService {
+        public void sendNotification(Notification notification);
+    }
+
+    public class sendSmsNotification {
+        public void sendNotification(Notification notification);
+    }
+
+    public class emailSmsNotification {
+        public void sendNotification(Notification notification);
+    }
+
+    public class pushNotification {
+        public void sendNotification(Notification notification);
+    }
+
+     /*
+    Search
+     */
+
+    public interface Search {
+        public List<Member> searchMember(String name);
+        public List<Group> searchGroup(String name);
+        public List<Page> searchPage(String name);
+        public List<Post> searchPost(String word);
+    }
+
+    public class SearchIndex implements Search {
+        HashMap<String, List<Member>> memberNames;
+        HashMap<String, List<Group>> groupNames;
+        HashMap<String, List<Page>> pageTitles;
+        HashMap<String, List<Post>> posts;
+
+        public boolean addMember(Member member) {
+            if(memberNames.containsKey(member.getName())) {
+                memberNames.get(member.getName()).add(member);
+            } else {
+                memberNames.put(member.getName(), member);
+            }
+        }
+
+        public boolean addGroup(Group group);
+        public boolean addPage(Page page);
+        public boolean addPost(Post post);
+
+        public List<Member> searchMember(String name) {
+            return memberNames.get(name);
+        }
+
+        public List<Group> searchGroup(String name) {
+            return groupNames.get(name);
+        }
+
+        public List<Page> searchPage(String name) {
+            return pageTitles.get(name);
+        }
+
+        public List<Post> searchPost(String word) {
+            return posts.get(word);
+        }
+    }
+
+    public static void main(String[] args) {
+
+    }
+}
