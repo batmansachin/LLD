@@ -1,0 +1,224 @@
+/* Basic Uber use case like uer can create the account
+* User can add Paymentmethod
+* User can receive the notification
+* User can book the cab
+*/
+public class Main {
+
+    public class Address {
+        String addressLine1;
+        String addressLine2;
+        String addressLine3;
+        String state;
+        String city;
+        String zipCode;
+        String landMark;
+        Location location;
+    }
+
+    public class Account {
+        String accountId;
+        String userName;
+        String password;
+        String emailId;
+        String phoneNumber;
+        List<Address> AddressList; //can save the address which he frequently visits;
+        AccountStatus accountStatus;
+        List<Trip> orderList;
+        List<PaymentMethod> paymentMethodList;
+
+        public void addAddress(Address address);
+        public void addPaymentMethod(PaymentMethod paymentMethod);
+    }
+
+    public abstarct class Customer {
+        public void register();
+    }
+
+    public class Admin extends Customer {
+        private Account account;
+
+        public void addDriver();
+        public void blockDriver();
+        public void blockCustomer();
+        public void addCustomer();
+    }
+
+    public class Driver extends Customer {
+        private String driverId;
+        private Account account;
+        private Vechile vechile;
+        private DriverContract driverContract;
+
+        public void registerCab();
+        public void acceptRequest();
+        public void rejectRequest();
+        public void addDriverDetails();
+        public void updateDriverDetails();
+        public void accept();
+        public void reject();
+    }
+
+    public class User extends Customer {
+        private Account account;
+
+        public void bookCab();
+        public void searchCab();
+        public void addAddress();
+        public void addPaymentMethod();
+    }
+
+    public class unRegistrUser extends Customer {
+        public void searchCab();
+    }
+
+    public class Trip {
+        Driver driver;
+        User user;
+        Vechile vechile;
+        Date requestedTimeStamp;
+        Date tripStartTime;
+        Date tripEndTime;
+        int tripDuration;
+        Address startAddress;
+        Address endAddress;
+        double distance;
+        Amount amount;
+        TripReview tripReview;
+    }
+
+    public class TripReview {
+        Integer rating;
+        String description;
+    }
+
+    public class Tax {
+        double sgst;
+        double cgst;
+        double totalGst;
+    }
+
+    public class Amount {
+        private double basePrice;
+        private Tax tax;
+        private PromotionApplied promotionApplied
+        private double totalPrice;
+    }
+
+    public class PromotionApplied {
+        private double offerAmount;
+        private Tax tax;
+        private double total;
+    }
+
+    public class PaymentMethod {
+        String id;
+        PaymentMethodType paymentMethodType;
+    }
+
+    public enum PaymentMethodType {
+        CC, UPI, NET_BANKING, WALLET;
+    }
+
+    /*
+    Notification
+     */
+    public class NotificationInfo {
+        private int notificationId;
+        private Date createdOn;
+        private String content;
+    }
+
+    public interface BookCab {
+        public void book(Driver driver, User customer);
+    }
+
+
+    public class BookUberBike {
+        public void book(Driver driver, User customer);
+    }
+
+    public class BookUberGo {
+        public void book(Driver driver, User customer);
+    }
+
+    public class BookUberPremium {
+        public void book(Driver driver, User customer);
+    }
+    /*
+    Search Cab
+     */
+    public interface SearchCab {
+        public void search(Address source, Address distination);
+    }
+
+    public class UberBike implements SearchCab {
+        public void search(Address source, Address distination) {
+        }
+    }
+
+    public class UberGo implements SearchCab {
+        public void search(Address source, Address distination) {
+        }
+    }
+
+    public class UberPremium implements SearchCab {
+        public void search(Address source, Address distination) {
+        }
+    }
+
+
+    public interface Notification {
+        public void sendNotification(NotificationInfo notificationInfo);
+    }
+
+    public class emailNotification implements Notification {
+        public void sendNotification(NotificationInfo notificationInfo);
+    }
+
+    public class smsNotification implements Notification {
+        public void sendNotification(NotificationInfo notificationInfo);
+    }
+
+    public class pushNotification implements Notification {
+        public void sendNotification(NotificationInfo notificationInfo);
+    }
+
+    public class Vechile {
+        String vechile_id;
+        String driverId;
+        String vechileName;
+        String vechileNumber;
+        String menufectureBrand;
+        String dateOfPurchage;
+        Intger capacity;
+        VechileType vechileType;
+        Address address;
+
+    }
+
+    public class Location {
+        String longitude;
+        String Latitude;
+    }
+
+    public enum VechileType {
+        BIKE, UBER_GO, UBER_PREMIUM;
+    }
+
+    public class DriverContract {
+        String rc_no;
+        String drivingLicence;
+        String drivingLicenceExpiryDate;
+        String panNumber;
+        String adharNumber;
+    }
+
+    public enum AccountStatus {
+        ACTIVE, INAACTIVE, SUSPENDED, CLOSED;
+    }
+
+    public static void main(String[] args) {
+
+    }
+}
