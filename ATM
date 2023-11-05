@@ -1,0 +1,321 @@
+public class Main {
+   // ATM Machine System Design
+//   Requirements and Goals of the System
+//    The main components of the ATM that will affect interactions between the ATM and its users are:
+//    Card reader: to read the users’ ATM cards.
+//    Keypad: to enter information into the ATM e.g. PIN. cards.
+//            Screen: to display messages to the users.
+//    Cash dispenser: for dispensing cash.
+//    Deposit slot: For users to deposit cash or checks.
+//            Printer: for printing receipts.
+//    Communication/Network Infrastructure: it is assumed that the ATM has a communication infrastructure to communicate with the bank upon any transaction or activity.
+//    The user can have two types of accounts: 1) Checking, and 2) Savings, and should be able to perform the following five transactions on the ATM:
+//
+//    Balance inquiry: To see the amount of funds in each account.
+//    Deposit cash: To deposit cash.
+//    Deposit check: To deposit checks.
+//    Withdraw cash To withdraw money from their checking account.
+//    Transfer funds: To transfer funds to another account.
+
+//    ATM Machine System Design
+// create class for each component
+// create class for ATM
+// create class for user
+// create class for account
+// create class for transaction
+// create class for bank
+// create class for branch
+// create class for address
+// create class for cash dispenser
+// create class for keypad
+// create class for screen
+// create class for printer
+// create class for check deposit
+// create class for cash deposit
+// create class for card reader
+
+    private enum AccountStatus {
+        ACTIVE, BLOCKED, BANNED, COMPROMISED, ARCHIVED, UNKNOWN;
+    }
+
+    private class Bank {
+        private Address address;
+        private String name;
+        private String bankId;
+    }
+
+    private class Account {
+        private String accountId;
+        private AccountStatus accountType;
+        private double accountBalance;
+        private String accountName;
+        private Bank bank;
+    }
+
+    private class Person {
+        private String name;
+        private Address address;
+        private String email;
+        private String phone;
+
+
+        public void creaseAccount() {
+            return;
+        }
+    }
+
+    private class User extends Person {
+        private int userId;
+        private String password;
+        private String userName;
+
+        private Account account;
+
+        public boolean resetPassword() {
+            return true;
+        }
+    }
+
+    private class Admin extends Person {
+        private int adminId;
+        private String password;
+        private String userName;
+
+        public boolean addATM() {
+            return true;
+        }
+
+        public boolean removeATM() {
+            return true;
+        }
+
+    }
+
+    private class Address {
+        private String streetAddress;
+        private String city;
+        private String state;
+        private String zipCode;
+        private String country;
+    }
+    
+    private class CashDetails {
+        private int totalFiveDollarBills;
+        private int totalTwentyDollarBills;
+        private int totalFiftyDollarBills;
+        private int totalHundredsDollarBills;
+        private int totalTwoHundredsDollarBills;
+        private int totalFiveHundredsDollarBills;
+        private int totalThousandsDollarBills;
+        
+        private int amount;
+    }
+
+    private class CashDispenser {
+        private int dispenserId;
+        private CashDetails cashDetails;
+
+        public void dispenseCash(double amount) {
+            // dispense cash
+        }
+        
+        public void addCash(double amount) {
+            // add cash
+        }
+        
+        public void removeCash(double amount) {
+            // remove cash
+        }
+
+        public boolean canDispenseCash(double amount) {
+            // check if cash can be dispensed
+            return true;
+        }
+        
+    }
+
+    private class MachineDetails {
+        private String model;
+        private String manufacturer;
+        private String serialNumber;
+    }
+
+    private class KeyPadDetail extends  MachineDetails {
+
+    }
+
+    private class Keypad {
+        private int keypadId;
+        private KeyPadDetail keyPadDetail;
+        public void getInput() {
+            // get input from user
+        }
+    }
+
+    private class ScreenDetail extends MachineDetails {
+
+    }
+
+    private class Screen extends MachineDetails {
+        private int screenId;
+        private ScreenDetail screenDetail;
+
+        public void displayMessage(String message) {
+            // display message on screen
+        }
+    }
+
+    private class Printer extends MachineDetails {
+        private int printerId;
+        private String printerType;
+
+        public void printReceipt(String message) {
+            // print receipt
+        }
+    }
+
+    private enum DepositStatus {
+        SUCCESS, FAILED, IN_PROCESS, UNKNOWN;
+    }
+    
+    private class Deposit {
+        private int depositId;
+        private double amount;
+        private Date depositDate;
+        private DepositStatus depositStatus;
+        
+    }
+
+    private class CheckDeposit extends Deposit {
+        private String check; // check image
+
+    }
+
+    private class CashDeposit  extends Deposit {
+        private CashDetails cashAmount;
+    }
+
+    private class CardReader extends MachineDetails {
+        private String cardReaderId;
+
+        public void readCard() {
+            // read card
+        }
+    }
+
+    public enum TransactionStatus {
+        SUCCESS, FAILED, IN_PROCESS, SIDELINED, CANCELED, UNKNOWN;
+    }
+
+    public enum TransactionType {
+        DEPOSIT, WITHDRAW, TRANSFER, BALANCE_INQUIRY;
+    }
+
+
+    private class TransactionDetails {
+        private int transactionId;
+        private Date transactionDate;
+        private double amount;
+        private String transactionType;
+        private TransactionStatus transactionStatus;
+        private Address transactionLocation;
+        private String transactionComments;
+        private ATM atm;
+        private User user;
+    }
+
+    private abstract class Transaction {
+        TransactionDetails transactionDetails;
+
+        abstract public void validateTransaction();
+        abstract public void makeTransaction();
+    }
+
+
+    private class DepositTransaction extends Transaction {
+        private Deposit deposit;
+
+
+        @Override
+        public void validateTransaction() {
+
+        }
+
+        @Override
+        public void makeTransaction() {
+            validateTransaction();
+            // make transaction
+        }
+    }
+
+    private class WithdrawTransaction extends Transaction {
+        private CashDetails cashDetails;
+        @Override
+        public void validateTransaction() {
+
+        }
+
+        @Override
+        public void makeTransaction() {
+            validateTransaction();
+            // make transaction
+        }
+    }
+
+    private class TransferTransaction extends Transaction {
+        private Account fromAccount;
+        private Account toAccount;
+        @Override
+        public void validateTransaction() {
+
+        }
+
+        @Override
+        public void makeTransaction() {
+            validateTransaction();
+            // make transaction
+        }
+    }
+
+    private class BalanceInquiryTransaction extends Transaction {
+        private Account account;
+        @Override
+        public void validateTransaction() {
+
+        }
+
+        @Override
+        public void makeTransaction() {
+            validateTransaction();
+            // make transaction
+        }
+    }
+
+    public class ATM {
+        private int atmId;
+        private Address location;
+        private CashDispenser cashDispenser;
+        private Keypad keypad;
+        private Screen screen;
+        private Printer printer;
+        private CheckDeposit checkDeposit;
+        private CashDeposit cashDeposit;
+        private CardReader cardReader;
+
+        public void authenticateUser() {
+            // authenticate user
+        }
+
+        public void makeTransaction(String transactionType, TransactionDetails transactionDetails) {
+            Transaction transaction;
+            if(transactionType == "DEPOSIT") {
+                transaction = new DepositTransaction();
+                transaction.makeTransaction();;
+            }
+        }
+    }
+
+    public void main() {
+
+
+    }
