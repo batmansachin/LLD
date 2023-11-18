@@ -1,0 +1,207 @@
+//Requirements:
+//        Let us see how to design a basic Snake Game that provides the following functionalities:
+//        Snake can move in a given direction and when it eats the food, the length of snake increases.
+//        When the snake crosses itself, the game will be over.
+//        Food will be generated at a given interval.
+
+public class Main {
+
+    public enum GameStatus {
+        STARTING, STARTED, FINISHED, TERMINATED;
+    }
+
+    public enum CellType {
+        FREE, SNAKE_NODE, FOOD
+    }
+
+    public static class Cell {
+        private int row;
+        private int col;
+        private CellType cellStatus;
+
+        public Cell(int row, int col) {
+            this.row = row;
+            this.col = col;
+            this.cellStatus = CellType.FREE;
+        }
+
+        public void updateCellStatus(CellType cellStatus) {
+            this.cellStatus = cellStatus;
+        }
+
+        public CellType getCellStatus() {
+            return  this.cellStatus;
+        }
+
+        public int getRow() {
+            return this.row;
+        }
+
+        public int getCol() {
+            return this.col;
+        }
+
+    }
+
+
+    public static class Board {
+        private Cell[][] cells;
+        private int ROW_COUNT;
+        private int COL_COUNT;
+
+        public Board(int row, int col) {
+            this.ROW_COUNT = row;
+            this.COL_COUNT = col;
+
+            cells = new Cell[ROW_COUNT][COL_COUNT];
+
+            for (int i = 0; i < ROW_COUNT; i++) {
+                for (int j = 0; j < COL_COUNT; j++) {
+                    this.cells[i][j] = new Cell(i, j);
+                }
+            }
+        }
+
+        public Cell[][] getCells() {
+            return this.cells;
+        }
+
+        public void generateFood() {
+            System.out.println("Going to generate food");
+            int row = 0, column = 0;
+            while (true) {
+                row = (int) (Math.random() * ROW_COUNT);
+                column = (int) (Math.random() * COL_COUNT);
+                if (cells[row][column].getCellStatus() != CellType.SNAKE_NODE)
+                    break;
+            }
+            cells[row][column].updateCellStatus(CellType.FOOD);
+            System.out.println("Food is generated at: " + row
+                    + " " + column);
+        }
+    }
+
+
+    public static class Snake {
+        private List<Cell> snakeBody;
+        private int snakeLength;
+
+
+        public Snake() {
+            this.snakeBody = new LinkedList<>();
+            this.snakeLength = 0;
+        }
+
+        public int getSnakeLength() {
+            return this.snakeLength;
+        }
+
+        public void move(Cell nextCell) {
+           Cell tail = this.snakeBody.remove(0);
+           tail.updateCellStatus(CellType.FREE);
+           nextCell.updateCellStatus(CellType.SNAKE_NODE);
+           this.snakeBody.add(nextCell);
+        }
+
+        public void eatFood(Cell nextCell) {
+            this.snakeLength++;
+            nextCell.updateCellStatus(CellType.SNAKE_NODE);
+            this.snakeBody.add(nextCell);
+        }
+
+
+    }
+
+
+    private enum Direction {
+        NONE, LEFT, RIGHT, UP, DOWN;
+    }
+
+    public static class Game {
+        private Board board;
+        private Snake snake;
+        private Direction direction;
+
+        private GameStatus gameStatus;
+        public void setDirection(Direction direction) {
+            this.direction = direction;
+        }
+
+        public Direction getDirection() { return direction; }
+
+        public Game(Board board, Snake snake) {
+            this.board = board;
+            this.snake = snake;
+            this.gameStatus = GameStatus.STARTING;
+        }
+
+        public void startGame() {
+            System.out.println("Game started!!!");
+            System.out.println("Snake length " + this.snake.getSnakeLength());
+            this.gameStatus = GameStatus.STARTED;
+        }
+
+        public void update()
+        {
+            System.out.println("Going to update the game");
+            if (this.gameStatus == GameStatus.STARTED) {
+                if (direction != Direction.NONE) {
+                    Cell nextCell
+                            = getNextCell(snake.snakeBody.get(snake.getSnakeLength()-1));
+
+                    if (snake.checkCrash(nextCell)) {
+                        setDirection(Direction.NONE);
+                        gameOver = true;
+                    }
+                    else {
+                        snake.move(nextCell);
+                        if (nextCell.getCellStatus()
+                                == CellType.FOOD) {
+                            snake.eatFood(nextCell);
+                            board.generateFood();
+                        }
+                    }
+                }
+            }
+        }
+
+        private Cell getNextCell(Cell currentPosition)
+        {
+            System.out.println("Going to find next cell");
+            int row = currentPosition.getRow();
+            int col = currentPosition.getCol();
+
+            if (direction == Direction.RIGHT) {
+                col++;
+            }
+            else if (direction == Direction.LEFT) {
+                col--;
+            }
+            else if (direction == Direction.UP) {
+                row--;
+            }
+            else if (direction == Direction.DOWN) {
+                row++;
+            }
+
+            Cell nextCell = board.getCells()[row][col];
+
+            return nextCell;
+        }
+
+    }
+
+
+
+
+    public static void main(String[] args) {
+
+        Board board =  new Board(10, 10);
+        Snake snake = new Snake();
+        Game game =  new Game(board, snake);
+        game.startGame();;
+    }
+
+
+
+}
