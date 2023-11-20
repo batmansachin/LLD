@@ -1,0 +1,196 @@
+import lombok.Data;
+
+import javax.swing.*;
+import java.util.*;
+
+//Requirements:
+// Design ludo Snake and ladder Online Game
+// Multiple User can play the game
+//
+
+public class Main {
+
+    static public class User {
+        private String userId;
+        private String name;
+        private int position;
+
+        User(String userId, String name) {
+            this.userId = userId;
+            this.name = name;
+            this.position = 0;
+        }
+
+        String getUserId() {
+            return this.userId;
+        }
+
+        String getName() {
+            return this.name;
+        }
+
+        void setPosition(int position) {
+            this.position = position;
+        }
+
+        int getPosition() {
+            return this.position;
+        }
+
+        void printUserDetails() {
+            System.out.println("Name " + this.name + " Position " + this.position);
+        }
+    }
+
+    static public class BoardEntity {
+        int starting;
+        int ending;
+
+        BoardEntity(int starting, int ending) {
+            this.starting = starting;
+            this.ending = ending;
+        }
+    }
+
+    static public class  Board {
+        int[] box;
+        private List<BoardEntity> snakeList;
+        private List<BoardEntity> ladderList;
+        int boardLength;
+
+        Board(int n, List<BoardEntity> ladderList, List<BoardEntity> snakeList) {
+            this.boardLength = n;
+            this.snakeList = snakeList;
+            this.ladderList = ladderList;
+            this.box = new int[this.boardLength+1];
+        }
+
+    }
+
+    static public class Game {
+        private Board board;
+        private Queue<User> usersList;
+        private Dice dice;
+        private List<User> winnerList;
+
+
+        public Game(Board board, Dice dice) {
+            this.usersList = new LinkedList<>();
+            this.board = board;
+            this.dice = dice;
+            this.winnerList = new ArrayList<>();
+        }
+
+        public void joinGame(User user) {
+            this.usersList.offer(user);
+            System.out.println("User "+ user.getName() + "has join game");
+        }
+
+        public void getPlayerList() {
+            this.usersList.forEach(user -> System.out.println(user.getName() + " " +user.getPosition()));
+        }
+
+        public void printWinnerList() {
+            System.out.println("############# Winner List ################### ");
+            this.winnerList.stream().map(User::getName).forEach(System.out::println);
+        }
+
+
+        public void startGame() {
+            System.out.println("Game Started");
+            while( usersList.size() > 1) {
+                User user = usersList.poll();
+                int nextMove = this.dice.rollDice();
+                int tempMove = nextMove + user.getPosition();
+                tempMove = handleSnakeAndLadder(tempMove);
+                System.out.println(user.getName() + " current position " + user.getPosition() + " Dice " + nextMove + " new Position " + tempMove);
+                if(isValidPosition(tempMove)) user.setPosition(tempMove);
+                if(isGameOver(user.getPosition())) {
+                    System.out.println("User winner "+ user.getName());
+                    this.winnerList.add(user);
+                } else {
+                usersList.offer(user);
+                }
+            }
+        }
+
+        private boolean isValidPosition(int position) {
+            return position <= this.board.boardLength;
+        }
+
+        private boolean isGameOver(int position) {
+            return position == board.boardLength ? true:false;
+        }
+
+
+        private int handleSnakeAndLadder(int position) {
+            for(BoardEntity boardEntity : this.board.ladderList) {
+                if(boardEntity.starting == position) {
+                    System.out.println("Got a ladder " + position);
+                    return boardEntity.ending;
+                }
+            }
+
+            for(BoardEntity boardEntity : this.board.snakeList) {
+                if(boardEntity.starting == position) {
+
+                    System.out.println("Got a snake " + position);
+                    return boardEntity.ending;
+                }
+            }
+
+            return position;
+
+        }
+
+
+    }
+
+
+    static public class Dice {
+        public int rollDice() {
+            Random random = new Random();
+            return random.nextInt(6) + 1;
+        }
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println("Welcome to Sname and Ladder Game");
+        User user1 = new User("1", "Nozomi Okuhara");
+        User user2 = new User("2", "An se Young");
+        User user3 = new User("3", "Tai tzu ying");
+        User user4 = new User("4", "Aya Ohori");
+
+        // join game
+        BoardEntity ladder1 = new BoardEntity(5, 20);
+        BoardEntity ladder2 = new BoardEntity(30, 71);
+
+        BoardEntity snake1 = new BoardEntity(50, 5);
+        BoardEntity snake2 = new BoardEntity(99, 12);
+
+
+        // Board
+        Board board = new Board(100, List.of(ladder1, ladder2), List.of(snake1, snake2));
+
+        // Dice
+        Dice dice = new Dice();
+
+        // Game game
+
+        Game game = new Game(board, dice);
+
+        game.joinGame(user1);
+        game.joinGame(user2);
+        game.joinGame(user3);
+        game.joinGame(user4);
+
+        game.startGame();
+
+        game.printWinnerList();
+
+    }
+
+
+
+}
