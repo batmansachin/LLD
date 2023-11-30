@@ -1,0 +1,171 @@
+// Design pattern used is chain of responsibility
+
+
+public class Main {
+
+    public static class Logger implements Cloneable, Serializable {
+        public volatile static Logger INSTANCE;
+        public volatile static AbstactLogger chainOfLogger;
+        public volatile static LogSubject logSubject;
+
+        private Logger() {
+
+        }
+
+        public static synchronized Logger getInstance() {
+            if(Objects.isNull(INSTANCE)) {
+                INSTANCE = new Logger();
+                LogManager logManager = new LogManager();
+                chainOfLogger = logManager.getChainOfLog();
+                logSubject = logManager.getLogSubject();
+            }
+            return INSTANCE;
+        }
+
+        public void infoLog(String msg) {
+            chainOfLogger.logMessage(1, msg, logSubject);
+        }
+
+        public void errorLog(String msg) {
+            chainOfLogger.logMessage(2, msg, logSubject);
+        }
+
+        public void debugLog(String msg) {
+            chainOfLogger.logMessage(3, msg, logSubject);
+        }
+    }
+
+    public static abstract class AbstactLogger {
+        int level;
+        AbstactLogger nextLoggingLevel;
+
+        public void setNextLoggingLevel(AbstactLogger loggingLevel) {
+            this.nextLoggingLevel = loggingLevel;
+        }
+
+        public void logMessage(int level, String message, LogSubject logSubject) {
+            if(this.level == level) {
+                logMessage(message, logSubject);
+            }
+            if(nextLoggingLevel != null) {
+                nextLoggingLevel.logMessage(level, message, logSubject);
+
+            }
+        }
+
+        protected abstract void logMessage(String msg, LogSubject logSubject);
+
+    }
+
+    public static class LogManager {
+
+        public AbstactLogger getChainOfLog() {
+            AbstactLogger infoLogger = new InfoLogger(1);
+            AbstactLogger errorLogger = new ErrorLogger(2);
+            AbstactLogger debugLogger = new DebugLogger(3);
+
+            infoLogger.setNextLoggingLevel(errorLogger);
+            errorLogger.setNextLoggingLevel(debugLogger);
+            return infoLogger;
+        }
+
+        public LogSubject getLogSubject() {
+            LogSubject logSubject = new LogSubject();
+            ConsoleObserver consoleObserver = new ConsoleObserver();
+            FileObserver fileObserver = new FileObserver();
+            logSubject.addObserver(1, consoleObserver);
+            logSubject.addObserver(1, fileObserver);
+            logSubject.addObserver(2, consoleObserver);
+            logSubject.addObserver(3, consoleObserver);
+            return logSubject;
+        }
+    }
+
+    public static class InfoLogger extends AbstactLogger {
+
+        public InfoLogger(int level) {
+            this.level = level;
+        }
+        @Override
+        protected void logMessage(String msg, LogSubject logSubject) {
+
+            logSubject.notifyAllObserver(1, "info "+ msg);
+        }
+    }
+
+    public static class ErrorLogger extends AbstactLogger {
+
+        public ErrorLogger(int level) {
+            this.level = level;
+        }
+        @Override
+        protected void logMessage(String msg, LogSubject logSubject) {
+            logSubject.notifyAllObserver(2, "error " + msg);
+        }
+    }
+
+    public static class DebugLogger extends AbstactLogger {
+
+        public DebugLogger(int level) {
+            this.level = level;
+        }
+        @Override
+        protected void logMessage(String msg, LogSubject logSubject) {
+            logSubject.notifyAllObserver(3, "debug " + msg);
+        }
+    }
+
+
+    // Observer
+
+    public static interface Observer {
+
+        public void log(String msg);
+
+    }
+
+    public static class ConsoleObserver implements Observer {
+
+        @Override
+        public void log(String msg) {
+            System.out.println("Console Logger " + msg);
+        }
+    }
+
+    public static class FileObserver implements Observer {
+
+        @Override
+        public void log(String msg) {
+            System.out.println("File Logger " + msg);
+        }
+    }
+
+
+    public static class LogSubject {
+        private Map<Integer, List<Observer>> observerMap;
+
+        public LogSubject() {
+            this.observerMap = new HashMap<>();
+        }
+
+        public void addObserver(int level, Observer observer) {
+            List<Observer> list = this.observerMap.getOrDefault(level, new ArrayList<>());
+            list.add(observer);
+            this.observerMap.put(level, list);
+        }
+
+        public void notifyAllObserver(int level, String msg) {
+            this.observerMap.put(level, new ArrayList<>()).forEach(observer -> observer.log(msg));
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Logger logger =  Logger.getInstance();
+
+        logger.infoLog("This is info log");
+//        logger.errorLog("This is error log");
+//        logger.debugLog("This is debug log");
+
+    }
+}
