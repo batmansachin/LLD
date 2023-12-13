@@ -1,0 +1,74 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class Player {
+    private int playerId;
+    private String playerName;
+
+    public Player(int playerId, String playerName) {
+        this.playerId = playerId;
+        this.playerName = playerName;
+    }
+
+    // Getters and setters
+}
+
+class Token {
+    private int tokenId;
+    private int playerId;
+    private int position;
+
+    public Token(int tokenId, int playerId, int position) {
+        this.tokenId = tokenId;
+        this.playerId = playerId;
+        this.position = position;
+    }
+
+    // Getters and setters
+}
+
+class LudoGame {
+    private List<Player> players;
+    private List<Token> tokens;
+
+    public LudoGame() {
+        this.players = new ArrayList<>();
+        this.tokens = new ArrayList<>();
+    }
+
+    public void addPlayer(Player player) {
+        players.add(player);
+    }
+
+    public void addToken(Token token) {
+        tokens.add(token);
+    }
+
+    // Additional methods for game logic, if needed
+
+    // Getters and setters
+}
+
+public class LudoGameDBSchema {
+    public static void main(String[] args) {
+        LudoGame ludoGame = new LudoGame();
+
+        // Adding players
+        Player player1 = new Player(1, "Player1");
+        Player player2 = new Player(2, "Player2");
+        ludoGame.addPlayer(player1);
+        ludoGame.addPlayer(player2);
+
+        // Adding tokens
+        Token token1 = new Token(1, 1, 0);
+        Token token2 = new Token(2, 1, 0);
+        Token token3 = new Token(3, 2, 0);
+        Token token4 = new Token(4, 2, 0);
+        ludoGame.addToken(token1);
+        ludoGame.addToken(token2);
+        ludoGame.addToken(token3);
+        ludoGame.addToken(token4);
+
+        // Perform other game operations as needed
+    }
+}
