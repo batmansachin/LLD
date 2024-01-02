@@ -1,0 +1,298 @@
+import logger.Logger;
+import lombok.Builder;
+
+import javax.swing.text.Document;
+import java.time.LocalDateTime;
+import java.util.*;
+
+
+public class Main {
+
+    public class DriverIdentity {
+        private String phoneNumber;
+        private String emailId;
+        private String driverId;
+        private Long createdTimeStamp;
+        private Long modifiedTimeStamp;// phone Number/email modified
+
+
+        public DriverIdentity createDriverIdentity(String phoneNumber){return null;}
+        public DriverIdentity updateDriverIdentity(String phoneNumber){return null;}
+        public boolean removeByPhoneNumber(String phoneNumber){return true;}
+        public DriverIdentity getByPhoneNumber(String phoneNumber){return null;}
+    }
+
+    public enum AccountStatus {
+        NEW("New created Account"),
+        ACCEPTED_TERMS_AND_CONDITIONS("Driver has accepted terms and conditions"),
+        PENDING_TERMS_AND_CONDITIONS("Driver has not yet accepted terms and conditions"),
+        REJECTED_TERMS_AND_CONDITIONS("Driver has rejected terms and conditions"),
+        DOCUMENT_VERIFICATION("Driver document verification"),
+        POLICE_VERIFICATION("Driver Police verification"),
+        TRACKING_DEVICE_SHIPPED("Tracking Device Shipped"),
+        TRACKING_DEVICE_DELIVERED("Tracking Device Delivered"),
+        ACTIVE("All verification completed"),
+        READY("Driver is ready to take ride"),
+        REJECTED("Driver verification rejected"),
+        SUSPENDED("Driver Suspended"),
+        INACTIVE("Driver not active since long");
+
+        private final String description;
+
+        AccountStatus(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+    }
+
+    public class Address {
+        private String addressId;
+        private String addressLine1;
+        private String addressLine2;
+        private String addressLine3;
+        private String landMark;
+        private String city;
+        private String state;
+        private String country;
+
+        public Address createAddress(Address address){return null;}
+        public Address getAddressById(String addressId) {return null;}
+        public Address removeAddressById(String addressId){return null;}
+        public Address updateAddressById(String addressId, Address address){return null;}
+    }
+
+    public enum CountryCode {
+        USA("+1"),
+        CANADA("+1"),
+        UK("+44"),
+        INDIA("+91"),
+        AUSTRALIA("+61");
+
+        private final String code;
+
+        CountryCode(String code) {
+            this.code = code;
+        }
+
+        public String getCode() {
+            return code;
+        }
+   }
+
+
+    public class PhoneNumber {
+        private String phoneNumber;
+        private CountryCode countryCode;
+    }
+
+    public abstract class User {
+        private String firstName;
+        private String lastName;
+        private String emailId;
+        private Long BirthDay;
+        private PhoneNumber phoneNumber;
+    }
+
+    public class Driver extends User {
+        private String userId;
+        private String addressId; // foreign key
+
+        private String profileId;
+        private String vehicleId;
+
+        private LocalDateTime gmtCreate;
+        private LocalDateTime gmtModified;
+    }
+
+
+    public class Password {
+        private String userId;
+        private String salt;
+        private String encryptedPassword;
+
+        private LocalDateTime gmtCreate;
+        private LocalDateTime gmtModified;
+    }
+
+
+    public enum DocumentVerificationStatus {
+        PENDING,
+        VERIFIED,
+        REJECTED;
+    }
+
+    public class Profile {
+        private String driverId; // primary key
+        private AccountStatus accountStatus;
+        private String failureReason;
+        // pan
+        private String panId;
+        // rc
+        private String rcId;
+        // driving licence
+        private String dlId;
+
+        private LocalDateTime gmtCreate;
+        private LocalDateTime gmtModified;
+    }
+
+    public enum DocumentType {
+        PAN, RC, DRIVING_LICENCE;
+    }
+
+    public abstract class DriverDocument {
+        private String id; // primary key
+        private String url; //
+        private DocumentType documentType;
+        private LocalDateTime issuingDate;
+        private LocalDateTime expiryDate;
+        private DocumentVerificationStatus panVerificationStatus;
+        private String failureReason;
+        private String driverId; // foreignKey
+
+        public DriverDocument(DocumentType documentType) {
+            this.documentType = documentType;
+        }
+
+        public DriverDocument save(DriverDocument driverDocument){
+            return null;
+        }
+
+        public DriverDocument getDriverDocumentById(String documentId){
+            return null;
+        }
+
+        public DriverDocument updateDriverDocument(String id, DriverDocument driverDocument) {
+            return null;
+        }
+
+        public DriverDocument updateDriverDocumentStatus(String id, DocumentVerificationStatus status) {
+            return null;
+        }
+
+        public DriverDocument removeDriverDocument(String id) {return null;}
+
+
+    }
+
+    public class PanCard extends DriverDocument {
+
+        public PanCard(DocumentType documentType) {
+            super(DocumentType.PAN);
+        }
+    }
+
+    public class RcCard extends DriverDocument {
+
+        public RcCard(DocumentType documentType) {
+            super(DocumentType.RC);
+        }
+    }
+
+    public class DrivingLicenece extends DriverDocument {
+
+        public DrivingLicenece(DocumentType documentType) {
+            super(DocumentType.DRIVING_LICENCE);
+        }
+    }
+
+    public enum VehicleType {
+        UBER_GO, UBER_MOTO;
+    }
+
+    public abstract class Vehicle extends VehicleDetail {
+        private String licenseNumber; // primary key
+        private VehicleType type;
+        private String driverId; // foreign Key
+
+        private LocalDateTime gmtCreate;
+        private LocalDateTime gmtModified;
+
+        public Vehicle(VehicleType type) {
+            this.type = type;
+        }
+
+    }
+
+    public abstract class VehicleDetail {
+        private String manufacturer;
+        private String manufacturingYear;
+        private String modelId;
+    }
+
+
+    public class UberGo extends Vehicle {
+
+        public UberGo() {
+            super(VehicleType.UBER_GO);
+        }
+    }
+
+    public class UberMoto extends Vehicle {
+
+        public UberMoto() {
+            super(VehicleType.UBER_MOTO);
+        }
+    }
+
+
+    // driver table
+
+    public interface DriverRegistrationService {
+        void createDriver(String phoneNumber, String email, String password);
+        void createDriverAsync(String phoneNumber, String email, String password);
+    }
+
+    public interface DriverAuthenticationService {
+        void login(String userId, String password);
+    }
+
+    // Can we use external Service for that
+    public interface UniqueIdGenerationService {
+        String getUniqueId();
+    }
+
+
+    public interface VehicleService {
+        Vehicle createVehicle(Vehicle vehicle);
+        Vehicle getVehicleById(String id);
+        Vehicle updateVehicleById(Vehicle vehicle);
+        Vehicle deleteVehicleById(String id);
+    }
+
+    public interface DriverProfileService {
+        class ProfileStatus {
+            String userId;
+            ProfileStatus status;
+        }
+        Driver getProfileById(String userId);
+        Driver createProfile(Driver driver);
+        Driver updateProfile(String userId, Driver driver);
+        boolean deleteProfile(String userId);
+        ProfileStatus getProfileStatus(String userId);
+    }
+
+    public interface DriverReadService {
+        DriverProfile getDriverProfile(String userId);
+    }
+
+    public class DriverProfile extends Profile {
+        private Profile profile;
+        private Vehicle vehicle;
+        private List<Document> documentsList;
+    }
+
+
+    public interface DriverOnboardingService {
+        void doDriverOnboarding();
+        void cancelDriverOnboarding();
+    }
+
+    public static void main(String args[]) {
+
+    }
+
+}
