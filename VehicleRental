@@ -1,0 +1,171 @@
+import logger.Logger;
+import lombok.Builder;
+
+import javax.swing.text.Document;
+import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.util.*;
+
+// User
+// Admin --> onboard or deboard the vehicle
+// Search -->
+public class Main {
+
+    public abstract class User {
+        private String userName;
+        private String name;
+        private String email;
+        private String phone;
+//        private Address address;
+    }
+
+    public enum AccountStatus {
+        ACTIVE, INACTIVE, SUSPENDED
+    }
+    public class Account {
+        private String userId;
+        private String password;
+        private AccountStatus accountStatus;
+        private LocalDateTime createdTimeStamp;
+        private LocalDateTime updatedTimeStamp;
+    }
+
+    public class Member extends User {
+        private Account account;
+    }
+
+    public class Admin extends User {
+        private Account account;
+    }
+
+    public enum VehicleStatus {
+        AVAILABLE, BOOKED;
+    }
+    public enum FuleType {
+        PETROL, DIESEL;
+    }
+    public class VehicleDetail {
+        String vehicleMenufecture; //
+        String model;
+        String FuleType;
+        int mileage;
+        LocalDateTime dateOfMenufecture;
+    }
+
+    public enum VehicleType {
+        CAR, BIKE, VAN;
+    }
+
+
+    public abstract class Vehicle {
+        private String vehicleId;
+        private VehicleDetail vehicleDetail;
+        private VehicleStatus vehicleStatus;
+        private int passengerCapacity;
+        private String userId;//
+        private VehicleType vehicleType;
+
+        public Vehicle(VehicleType vehicleType) {
+            this.vehicleType = vehicleType;
+        }
+
+        public abstract boolean reserveVehicle();
+
+        public abstract boolean returnVehicle();
+    }
+
+    public class Bike extends Vehicle {
+
+        public Bike(VehicleType vehicleType) {
+            super(VehicleType.BIKE);
+        }
+
+        @Override
+        public boolean reserveVehicle() {
+            return false;
+        }
+
+        @Override
+        public boolean returnVehicle() {
+            return false;
+        }
+    }
+
+    public class CAR extends Vehicle {
+
+        public CAR(VehicleType vehicleType) {
+            super(VehicleType.CAR);
+        }
+        @Override
+        public boolean reserveVehicle() {
+            return false;
+        }
+
+        @Override
+        public boolean returnVehicle() {
+            return false;
+        }
+    }
+
+    public class VAN extends Vehicle {
+
+        public VAN(VehicleType vehicleType) {
+            super(VehicleType.VAN);
+        }
+        @Override
+        public boolean reserveVehicle() {
+            return false;
+        }
+
+        @Override
+        public boolean returnVehicle() {
+            return false;
+        }
+    }
+
+    public enum ReservationStatus {
+        BOOKED, IN_PROCESS, CANCELLED, COMPLETED;
+    }
+
+    public class Address {
+        String addressLine1;
+        String addressLine2;
+        String addressLine3;
+        String city;
+        String country;
+        long zipCode;
+    }
+
+    public class VehicleReservation {
+        private String vehicleReservationId;
+        private String userId;
+        private Vehicle vehicle;
+
+        private ReservationStatus status;
+        private LocalDateTime creationDate;
+        private LocalDateTime startDate;
+        private LocalDateTime endDate;
+        private PickupStall pickupStall;
+
+    }
+
+    public class PickupStall {
+        private String id;
+        private String name;
+        private Address address;
+        List<Vehicle> vehicles;
+    }
+
+    public interface Search {
+        public List<Vehicle> searchByType(String type);
+        public List<Vehicle> searchByModel(String model);
+    }
+
+    public static void main(String args[]) {
+
+
+    }
+
+
+
+}
